@@ -1,11 +1,44 @@
 package com.tenco.blog.controller;
 
+
+import com.tenco.blog.repository.BoardNativeRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller // IoC 대상 - 싱글톤 패턴으로 관리 됨
 public class BoardController {
+
+    private BoardNativeRepository boardNativeRepository;
+
+    // DI: 의존성 주입 : 스프링이 자동으로 객체를 주입
+    public BoardController(BoardNativeRepository boardNativeRepository) {
+        this.boardNativeRepository = boardNativeRepository;
+    }
+
+
+    // username, title, content <--- DTO 받는 방법, 기본 데이터 타입 설정
+    // form 태그에서 넘어오는 데이터 받기
+    // form 태그에 name 속성에에 key 값 동일해야 함
+    // http://localhost:8080/board/save
+    // 스프링 부트 기본 파싱 전략 - key=value (form)
+    @PostMapping("/board/save")
+    public String save(@RequestParam("username") String username,
+                       @RequestParam("title")String title,
+                       @RequestParam("content")String content) {
+        System.out.println("title : " + title);
+        System.out.println("content : " + content);
+        System.out.println("username : " + username);
+
+        boardNativeRepository.save(title, content, username);
+
+
+
+        return "redirect:/";
+    }
+
 
     @GetMapping({"/", "/index"})
     public String index() {
