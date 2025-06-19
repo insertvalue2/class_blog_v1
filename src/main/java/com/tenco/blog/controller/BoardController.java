@@ -1,12 +1,17 @@
 package com.tenco.blog.controller;
 
 
+import com.tenco.blog.model.Board;
 import com.tenco.blog.repository.BoardNativeRepository;
+import com.tenco.blog.utils.MyDateUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller // IoC 대상 - 싱글톤 패턴으로 관리 됨
 public class BoardController {
@@ -26,26 +31,27 @@ public class BoardController {
     // 스프링 부트 기본 파싱 전략 - key=value (form)
     @PostMapping("/board/save")
     public String save(@RequestParam("username") String username,
-                       @RequestParam("title")String title,
-                       @RequestParam("content")String content) {
+                       @RequestParam("title") String title,
+                       @RequestParam("content") String content) {
         System.out.println("title : " + title);
         System.out.println("content : " + content);
         System.out.println("username : " + username);
 
         boardNativeRepository.save(title, content, username);
-
-
-
         return "redirect:/";
     }
 
 
     @GetMapping({"/", "/index"})
-    public String index() {
-        //    prefix: /templates/
-        //    return : index
-        //    suffix: .mustache
-        //    # 기본 경로를 src/main/resources/templates/index.mustache
+    // public String index(Model model) {
+    public String index(HttpServletRequest request) {
+
+        // DB 접근해서 select 결과값을 받아서 머스태치 파일에 데이터 바인딩 처리
+        List<Board> boardList = boardNativeRepository.findAll();
+        // 뷰에 데이터를 전달 -> Model 사용가능
+
+        request.setAttribute("boardList", boardList);
+
         return "index";
     }
 
