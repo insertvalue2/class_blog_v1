@@ -23,6 +23,21 @@ public class BoardController {
         this.boardNativeRepository = boardNativeRepository;
     }
 
+    /**
+     * 상세보기 화면 요청
+     * board/1
+     */
+    @GetMapping("/board/{id}")
+    public String detail(@PathVariable(name = "id") Long id,
+                         HttpServletRequest request) {
+
+        Board board = boardNativeRepository.findById(id);
+        request.setAttribute("board", board);
+
+        return "board/detail";
+    }
+
+
 
     // username, title, content <--- DTO 받는 방법, 기본 데이터 타입 설정
     // form 태그에서 넘어오는 데이터 받기
@@ -64,16 +79,6 @@ public class BoardController {
 
     //
 
-    /**
-     * 상세보기 화면 요청
-     * board/1
-     */
-    @GetMapping("/board/{id}")
-    public String detail(@PathVariable(name = "id") Integer id) {
-        // URL 에서 받은 id 값을 사용해서 특정 게시글 상세보기 조회
-        // 실제로는 이 id값으로 데이터베이스에 있는 게시글 조회 하고
-        // 머스태치 파일로 데이터를 내려 주어야 함 (Model)
-        return "board/detail";
-    }
+
 
 }
