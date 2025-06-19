@@ -6,6 +6,7 @@ import com.tenco.blog.repository.BoardNativeRepository;
 import com.tenco.blog.utils.MyDateUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,33 @@ public class BoardController {
     public BoardController(BoardNativeRepository boardNativeRepository) {
         this.boardNativeRepository = boardNativeRepository;
     }
+
+    @PostMapping("/board/{id}/update-form")
+    public String update(@PathVariable(name = "id") Long id,
+                         @RequestParam(name = "title") String title,
+                         @RequestParam(name = "content") String content,
+                         @RequestParam(name = "username") String username,
+                         HttpServletRequest request) {
+
+        boardNativeRepository.updateById(id, title, content, username);
+        // PRG 패턴 적용
+        // 수정 완료 후 해당 게시글 상세보기 페이지로 리다이렉트
+        // 게시글 상세보기 URL --> /board/{id}
+        return "redirect:/board/" + id;
+    }
+
+    // 게시글 수정 화면 요청 GET 방식
+    // /board/3/update-form
+    @GetMapping("/board/{id}/update-form")
+    public String updateForm(@PathVariable(name = "id") Long id,
+                             HttpServletRequest request) {
+
+        Board board = boardNativeRepository.findById(id);
+        request.setAttribute("board", board);
+
+        return "board/update-form";
+    }
+
 
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable(name = "id") Long id) {
