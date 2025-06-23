@@ -5,6 +5,7 @@ import com.tenco.blog.model.Board;
 import com.tenco.blog.repository.BoardNativeRepository;
 import com.tenco.blog.utils.MyDateUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +18,13 @@ import java.util.List;
 @Controller // IoC 대상 - 싱글톤 패턴으로 관리 됨
 public class BoardController {
 
+    @Autowired
     private BoardNativeRepository boardNativeRepository;
 
     // DI: 의존성 주입 : 스프링이 자동으로 객체를 주입
-    public BoardController(BoardNativeRepository boardNativeRepository) {
-        this.boardNativeRepository = boardNativeRepository;
-    }
+//    public BoardController(BoardNativeRepository boardNativeRepository) {
+//        this.boardNativeRepository = boardNativeRepository;
+//    }
 
     @PostMapping("/board/{id}/update-form")
     public String update(@PathVariable(name = "id") Long id,
